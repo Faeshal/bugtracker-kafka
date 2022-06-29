@@ -1,0 +1,361 @@
+{
+  "version": 3,
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": ["*"],
+      "expose_headers": ["Content-Length", "Content-Type"],
+      "max_age": "12h",
+      "allow_methods": ["GET", "HEAD", "POST", "PUT", "PATCH"]
+    }
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "bug-tracker",
+  "endpoints": [
+    {
+      "endpoint": "/api/v1/auth/register",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/register",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/login",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "input_headers": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/login",
+          "encoding": "no-op",
+          "method": "POST",
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ],
+      "headers_to_pass": ["*"]
+    },
+    {
+      "endpoint": "/api/v1/auth/refresh",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/refresh",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/profiles",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "input_headers": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/profiles",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/logout",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "input_headers": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/logout",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/users",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/users",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/users/{id}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/users/{id}",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:1000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects",
+      "method": "POST",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ],
+      "headers_to_pass": ["*"]
+    },
+    {
+      "endpoint": "/api/v1/projects/{id}",
+      "method": "POST",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/{id}",
+      "method": "PUT",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/cards",
+      "method": "GET",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/cards",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/cards/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/cards/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/cards/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/cards/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/projects/cards/{id}",
+      "method": "PATCH",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/projects/cards/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:2000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/comments",
+      "method": "POST",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/comments",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/comments/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/comments/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/comments/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/comments/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/comments/cards/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "input_headers": ["*"],
+      "input_query_strings": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/comments/cards/{id}",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://127.0.0.1:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/notifications",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/notifications",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": ["http://127.0.0.1:4000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}

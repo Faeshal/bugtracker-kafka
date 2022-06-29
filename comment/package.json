@@ -1,0 +1,32 @@
+{
+  "name": "comment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "express-validator": "^6.14.2",
+    "helmet": "^5.1.0",
+    "ioredis": "^5.0.6",
+    "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.5.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.16",
+    "pretty-error": "^4.0.0",
+    "sequelize": "^6.21.0",
+    "sequelize-cli": "^6.4.1",
+    "sequelize-cursor-pagination": "^2.3.0",
+    "underscore": "^1.13.4"
+  }
+}
