@@ -6,6 +6,7 @@ const User = require("../models").user;
 const _ = require("underscore");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
+const { ErrorResponse } = require("../middleware/errorHandler");
 const {
   generateAccessToken,
   generateRefreshsToken,
@@ -64,7 +65,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
   // * Publish Event
   publish({
-    stream: "newUser",
+    topic: "newUser",
     id: result.id,
     username,
     email,
@@ -72,14 +73,14 @@ exports.register = asyncHandler(async (req, res, next) => {
     status: result.status,
   });
 
-  publish({
-    stream: "newNotif",
-    fromUserId: result.id,
-    targetUserId: result.id,
-    type: "welcome aboard",
-    content: `hello ${username} 👋, welcome to BugTracker 😎`,
-    createdAt: new Date().toLocaleDateString(),
-  });
+  // publish({
+  //   stream: "newNotif",
+  //   fromUserId: result.id,
+  //   targetUserId: result.id,
+  //   type: "welcome aboard",
+  //   content: `hello ${username} 👋, welcome to BugTracker 😎`,
+  //   createdAt: new Date().toLocaleDateString(),
+  // });
 
   res.status(200).cookie("token", accessToken).json({
     success: true,
