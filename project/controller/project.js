@@ -94,7 +94,7 @@ exports.createProject = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    stream: "newProject",
+    topic: "newProject",
     id: result.id,
     title,
     description,

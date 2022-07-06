@@ -15,15 +15,28 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: "project" });
 
+// * Processor / Job
+const newUserProcess = async (message) => {
+  log.info("incoming data 📩:", message);
+  // * business logic
+  let userObj = _.omit(message, "topic");
+  const user = await User.findOne({ where: { id: userObj.id } });
+  if (!user) {
+    await User.create(userObj);
+  }
+};
+
 // * Stream Consumer
 async function eventConsumer() {
   await consumer.connect();
-  await consumer.subscribe({ topic: "newUser", fromBeginning: true });
+  await consumer.subscribe({ topics: ["newUser"], fromBeginning: true });
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      log.info({
-        value: message.value.toString(),
-      });
+      const rawObj = message.value.toString();
+      const parseObj = JSON.parse(rawObj);
+      if (topic == "newUser") {
+        newUserProcess(parseObj);
+      }
     },
   });
 }

@@ -1,128 +1,92 @@
-## Bug Tracker (Redis Stream Version)
+## Bug Tracker - Kafka
 
-![service map](https://i.postimg.cc/1t2JNzZB/bugtracker-drawio-drawio-1.png)
+**✨ Sample bug tracker app ([Trello like](https://trello.com/en/tour)) with event-driven microservices architecture using Apache Kafka as message broker for educational purpose**
 
-#### Postman: https://www.getpostman.com/collections/33de3709312453dcdc95
+![node](https://img.shields.io/badge/node-16.13.0-brightgreen) ![express](https://img.shields.io/badge/Express-4.17.1-lightgrey)
 
-## List Of Services
+![service map](https://i.postimg.cc/y8rqggFw/23-1.png)
 
-1. Auth (postgree-express) [table:users]
+## Intro 🌴
 
-   - register ✅
-   - login ✅
-   - logout ✅
-   - refresh token (jwt) ✅
-   - get current user data ✅
-   - get all users (+filter by name & offset based pagination) ✅
-   - get detail user ✅
+- Read: [What is Apache Kafka](https://aws.amazon.com/msk/what-is-kafka/#:~:text=Why%20would%20you%20use%20Kafka,that%20consumes%20streams%20of%20data.) || [Install Kafka with Homebrew](https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-mac-with-homebrew) 📕
+- Stack: Nodejs, Express, Postgre, MariaDB, MongoDB, Kafka, JWT Auth, PM2, KrakenD API Gateway
+- API Docs: **[Postman](https://www.getpostman.com/collections/33de3709312453dcdc95)**
+- Find Redis Streams example ? **[bugtracker-redis](https://github.com/Faeshal/bugtracker-redis)**
+- Step run the app :
+  - install dependency & setup env for each services
+  - install [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) & run each services with that
+  - install [Krakend](https://www.krakend.io/docs/overview/installing/), go to gateway folder & type `krakend run -c krakend.json`
+  - ready to go 🏎️
 
-2. Project (mariadb-express) [table:project,card,comment,users]
+## Detail Services 🔅
 
-   - create project ✅
-   - get projects (+filter by project title & offset based pagination) ✅
-   - get detail project ✅
-   - update project ✅
-   - delete project (cascade delete card) ✅
-   - create card ✅
-   - update card ✅
-   - delete card ✅
-   - get cards by projectId (+filter by status & cursor based pagination) ✅
-   - get detail card ✅
+**1. Auth (postgree-express) [table:users]**
 
-3. Comment (mariadb-express) [table:comment,users,card,project]
+- endpoint:
 
-   - create comment (when comment create, totalComment in card must be update too) ✅
-   - get comments by cardId (cursor based pagination) ✅
-   - get detail comments ✅
-   - delete comment ✅
+  - register
+  - login
+  - logout
+  - refresh jwt token
+  - get current user data
+  - get all users (+filter by name & offset based pagination)
+  - get detail user
 
-4. Notif (MongoDB-express) [collections: notif,users ]
+- event
+  - publish: newUser, newNotif
+  - consume: -
 
-   - get notifications by userId (mongoose paginate) ✅
+**2. Project (mariadb-express) [table:project,card,comment,users]**
 
-   type notification:
+- note : here, i am still merging project service with the card service, i think the **coupling is too tight** to be place in separated services and because it is only for learning purpose, so ya i think it's ok to place it in the same service.
 
-   - registration
-   - create project
-   - delete project
-   - create card
-   - change status card
-   - create commet
+- endpoint:
 
-## List Of Event
+  - create project
+  - get projects (+filter by project title & offset based pagination)
+  - get detail project
+  - update, delete project (cascade delete card)
+  - create,update & delete card
+  - get cards by projectId (+filter by status & cursor based pagination)
+  - get detail card
 
-1. Auth:
+- event
+  - publish: newProject, newCard, deleteProject, updateCard, changeCardStatus, newNotif
+  - consume: newUser, newComment, deleteComment
 
-   ### Publish :
+**3. Comment (mariadb-express) [table:comment,users,card,project]**
 
-   - newUser
-   - newNotif
+- endpoint:
 
-   ### Consume :
+  - create comment (when comment create, totalComment in card must be update too)
+  - get comments by cardId (cursor based pagination)
+  - get detail comments
+  - delete comment
 
-   -
+- event:
+  - publish: newComment, deleteComment, newNotif
+  - consume: newUser, newProject, newCard, updateCard, deleteProject, updateCardStatus
 
-2. Project:
+**4. Notif (MongoDB-express) [collections: notif ]**
 
-   #### Publish :
+- endpoint:
 
-   - newProject
-   - newCard
-   - deleteProject
-   - updateCard
-   - changeCardStatus
-   - newNotif
+  - get notifications by userId (mongoose paginate). type notification: registration, create project, delete project, create card, change status card, create commet
 
-   #### Consume :
+- event:
+  - publish: -
+  - consume: newNotif
 
-   - newUser
-   - newComment
-   - deleteComment
+## what's missing ? (reason: dont have free time to add it) 🙏
 
-3. Comment:
+- you can add, category services for grouping card inside project
+- better error handling & query validation
+- some primary feature, ex: forgot password, change password, kick member from project, advance permission etc..
 
-   #### Publish :
+## improvement that can be done 🚧
 
-   - newComment
-   - deleteComment
-   - newNotif
-
-   #### Consume :
-
-   - newUser
-   - newProject
-   - newCard
-   - updateCard
-   - deleteProject
-   - updateCardStatus
-
-4. Notif:
-
-   #### Publish :
-
-   -
-
-   #### Consume :
-
-   - newNotif
-
-## complementary thing
-
-- setup krakend api gateway ✅
-- clean up postman documentation
-- add good readme repository documentation
-
-## what's missing ? (reason: dont have free time to add it)
-
-- better error handling
-- query validation
-- some primary feature, ex: forgot password, change password, kick member from project, advance permission etc.. (don't have much time to add this feature)
-
-## improvement that can be done
-
-- add security package (hpp,helmet,csrf etc)
-- can add better message broker for advance event manager, ex: kafka
-- if still wanna using redis stream, please setup consumer group to each services for better load balancing
-- setup better event data store scenario, ex: if more than 90 days, store event to file not just in memory
+- better try, fault & storage mechanism
 - write unit & integration test
-- add docker & kubernetes (if you have a lot of free time)
+- if you have a lot of free time, you can add docker & kubernetes on top of it
+
+🗡 **July 2022 - [faeshal.com](https://faeshal.com)**

@@ -15,11 +15,12 @@ const producer = kafka.producer({
 async function publish(dataObj) {
   try {
     const { topic, id } = dataObj;
+    const timestamp = Date.now();
 
     await producer.connect();
     await producer.send({
       topic,
-      messages: [{ key: id.toString(), value: JSON.stringify(dataObj) }],
+      messages: [{ key: timestamp.toString(), value: JSON.stringify(dataObj) }],
     });
 
     await producer.disconnect();

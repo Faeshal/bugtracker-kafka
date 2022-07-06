@@ -73,14 +73,14 @@ exports.register = asyncHandler(async (req, res, next) => {
     status: result.status,
   });
 
-  // publish({
-  //   stream: "newNotif",
-  //   fromUserId: result.id,
-  //   targetUserId: result.id,
-  //   type: "welcome aboard",
-  //   content: `hello ${username} 👋, welcome to BugTracker 😎`,
-  //   createdAt: new Date().toLocaleDateString(),
-  // });
+  publish({
+    topic: "newNotif",
+    fromUserId: result.id,
+    targetUserId: result.id,
+    type: "welcome aboard",
+    content: `hello ${username} 👋, welcome to BugTracker 😎`,
+    createdAt: new Date().toLocaleDateString(),
+  });
 
   res.status(200).cookie("token", accessToken).json({
     success: true,

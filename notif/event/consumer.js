@@ -1,24 +1,23 @@
 require("pretty-error").start();
 const Notif = require("../models/Notif");
+const { Kafka } = require("kafkajs");
 const _ = require("underscore");
-const log = require("log4js").getLogger("event-consumer");
+const log = require("log4js").getLogger("consumer");
 log.level = "info";
-const Redis = require("ioredis");
-const redis = new Redis();
+
+// * Kafka Cred
+const kafka = new Kafka({
+  clientId: "notif",
+  brokers: ["127.0.0.1:9092"],
+});
+
+const consumer = kafka.consumer({ groupId: "notif" });
 
 // * Processor / Job
 const newNotifProcess = async (message) => {
-  const key = message[0];
-  const rawArr = message[1];
-  const rawObj = JSON.parse(rawArr[1]);
-  log.info("incoming data 📩:", rawObj);
-
-  // * Set cache Last Stream Id
-  const setId = await redis.set("id_newnotif_notifservice", key);
-  log.info("set cache userId 💾:", setId);
-
+  log.info("incoming data 📩:", message);
   // * business logic
-  let finalObj = _.omit(rawObj, "stream");
+  let finalObj = _.omit(message, "topic");
   const notif = await Notif.findOne(finalObj);
   if (!notif) {
     await Notif.create(finalObj);
@@ -27,29 +26,15 @@ const newNotifProcess = async (message) => {
 
 // * Stream Consumer
 async function eventConsumer() {
-  // * notif stream
-  let newNotifId;
-  const cacheNewNotifId = await redis.get("id_newnotif_notifservice");
-  if (cacheNewNotifId == null) {
-    newNotifId = "0";
-  } else {
-    newNotifId = cacheNewNotifId;
-  }
-  log.info("newNotif lastId:", newNotifId);
-
-  // * Listen Stream
-  const result = await redis.xread(
-    "block",
-    0,
-    "STREAMS",
-    "newNotif",
-    newNotifId
-  );
-  const [key, messages] = result[0];
-  messages.forEach(newNotifProcess);
-
-  // Pass the last id of the results to the next round.
-  await eventConsumer(messages[messages.length - 1][0]);
+  await consumer.connect();
+  await consumer.subscribe({ topic: "newNotif", fromBeginning: true });
+  await consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      const rawObj = message.value.toString();
+      const parseObj = JSON.parse(rawObj);
+      newNotifProcess(parseObj);
+    },
+  });
 }
 
 module.exports = eventConsumer;
