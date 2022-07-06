@@ -41,7 +41,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    stream: "newComment",
+    topic: "newComment",
     id: result.id,
     userId: id,
     cardId: parseInt(cardId),
@@ -59,7 +59,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
 
   for (userId of userIds) {
     publish({
-      stream: "newNotif",
+      topic: "newNotif",
       fromUserId: id,
       targetUserId: userId,
       type: "new comment",
@@ -156,7 +156,7 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
 
   // * publish comment
   publish({
-    stream: "deleteComment",
+    topic: "deleteComment",
     id: parseInt(id),
     cardId: comment.cardId,
     totalComment,
