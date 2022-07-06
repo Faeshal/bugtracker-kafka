@@ -37,7 +37,7 @@ exports.createCard = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    stream: "newCard",
+    topic: "newCard",
     id: result.id,
     name,
     content,
@@ -55,7 +55,7 @@ exports.createCard = asyncHandler(async (req, res, next) => {
 
   for (userId of userIds) {
     publish({
-      stream: "newNotif",
+      topic: "newNotif",
       fromUserId: id,
       targetUserId: userId,
       type: "new card",
@@ -251,7 +251,7 @@ exports.changeCardStatus = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    stream: "changeCardStatus",
+    topic: "changeCardStatus",
     id: parseInt(id),
     status,
     userId: currentUserId,
@@ -267,7 +267,7 @@ exports.changeCardStatus = asyncHandler(async (req, res, next) => {
 
   for (userId of userIds) {
     publish({
-      stream: "newNotif",
+      topic: "newNotif",
       fromUserId: currentUserId,
       targetUserId: userId,
       type: "new card",

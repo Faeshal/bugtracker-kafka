@@ -5,7 +5,7 @@ log.level = "info";
 
 // * Kafka Cred
 const kafka = new Kafka({
-  clientId: "auth",
+  clientId: "project",
   brokers: ["127.0.0.1:9092"],
 });
 const producer = kafka.producer({
@@ -16,13 +16,11 @@ async function publish(dataObj) {
   try {
     const { topic } = dataObj;
     const timestamp = Date.now();
-
     await producer.connect();
     await producer.send({
       topic,
       messages: [{ key: timestamp.toString(), value: JSON.stringify(dataObj) }],
     });
-
     await producer.disconnect();
     log.info("sent ✈️", dataObj);
   } catch (err) {

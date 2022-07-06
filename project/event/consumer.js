@@ -26,16 +26,51 @@ const newUserProcess = async (message) => {
   }
 };
 
+const newCommentProcess = async (message) => {
+  log.info("incoming data 📩:", message);
+
+  // * business logic
+  let finalObj = _.omit(message, "topic", "totalComment");
+  const comment = await Comment.findOne({ where: { id: finalObj.id } });
+  if (!comment) {
+    await Comment.create(finalObj);
+  }
+
+  await Card.update(
+    { comment: message.totalComment },
+    { where: { id: finalObj.cardId } }
+  );
+};
+
+const deleteCommentProcess = async (message) => {
+  log.info("incoming data 📩:", message);
+  // * business logic
+  await Comment.destroy({ where: { id: message.id } });
+  await Card.update(
+    { comment: message.totalComment },
+    { where: { id: message.cardId } }
+  );
+};
+
 // * Stream Consumer
 async function eventConsumer() {
   await consumer.connect();
-  await consumer.subscribe({ topics: ["newUser"], fromBeginning: true });
+  await consumer.subscribe({
+    topics: ["newUser", "newComment", "deleteComment"],
+    fromBeginning: true,
+  });
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       const rawObj = message.value.toString();
       const parseObj = JSON.parse(rawObj);
       if (topic == "newUser") {
         newUserProcess(parseObj);
+      }
+      if (topic == "newComment") {
+        newCommentProcess(parseObj);
+      }
+      if (topic == "deleteComment") {
+        deleteCommentProcess(parseObj);
       }
     },
   });

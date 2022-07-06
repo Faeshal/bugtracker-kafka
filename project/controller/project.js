@@ -103,7 +103,7 @@ exports.createProject = asyncHandler(async (req, res, next) => {
 
   for (member of members) {
     publish({
-      stream: "newNotif",
+      topic: "newNotif",
       fromUserId: creatorId,
       targetUserId: member,
       type: "new project created",
@@ -213,7 +213,7 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    stream: "deleteProject",
+    topic: "deleteProject",
     id: parseInt(id),
     title: isCreator.title,
     creatorId: parseInt(userId),
@@ -229,7 +229,7 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
 
   for (userId of userIds) {
     publish({
-      stream: "newNotif",
+      topic: "newNotif",
       fromUserId: id,
       targetUserId: userId,
       type: "project deleted",
