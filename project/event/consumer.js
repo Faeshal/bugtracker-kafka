@@ -52,7 +52,7 @@ const deleteCommentProcess = async (message) => {
   );
 };
 
-// * Stream Consumer
+// * Topic Consumer
 async function eventConsumer() {
   await consumer.connect();
   await consumer.subscribe({

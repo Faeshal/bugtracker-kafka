@@ -172,7 +172,11 @@ exports.updateProject = asyncHandler(async (req, res, next) => {
   }
 
   // * check is creator project ?
-  const isCreator = await Project.findOne({ where: { id, creatorId: userId } });
+  const isCreator = await Project.findOne({
+    where: { id: parseInt(id), creatorId: userId },
+    raw: true,
+  });
+  console.log(isCreator);
   if (!isCreator) {
     return next(new ErrorResponse("forbidden", 400));
   }
@@ -181,8 +185,8 @@ exports.updateProject = asyncHandler(async (req, res, next) => {
   await Project.update({ title, description }, { where: { id } });
 
   // * publish event
-  publisher({
-    queueName: "updateProject",
+  publish({
+    topic: "updateProject",
     id,
     title,
     description,
@@ -208,6 +212,16 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("forbidden", 400));
   }
 
+  // * prepare notif for all member
+  const members = await User_Project.findAll({
+    where: { projectId: parseInt(id) },
+    raw: true,
+  });
+  let userIds = [];
+  for (member of members) {
+    userIds.push(member.userId);
+  }
+
   // * delete project
   await Project.destroy({ where: { id } });
 
@@ -219,19 +233,12 @@ exports.deleteProject = asyncHandler(async (req, res, next) => {
     creatorId: parseInt(userId),
   });
 
-  const members = await User_Project.findAll({
-    where: { projectId: parseInt(id) },
-  });
-  let userIds = [];
-  for (member of members) {
-    userIds.push(member.userId);
-  }
-
-  for (userId of userIds) {
+  for (targetUserId of userIds) {
+    log.info("notif");
     publish({
       topic: "newNotif",
       fromUserId: id,
-      targetUserId: userId,
+      targetUserId,
       type: "project deleted",
       content: `😥 ${username} delete ${isCreator.title} project`,
       createdAt: new Date().toLocaleDateString(),

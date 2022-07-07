@@ -175,7 +175,7 @@ exports.updateCard = asyncHandler(async (req, res, next) => {
 
   // * publish event
   publish({
-    queueName: "updateCard",
+    topic: "updateCard",
     id,
     name,
     content,
@@ -204,8 +204,8 @@ exports.deleteCard = asyncHandler(async (req, res, next) => {
   await Card.destroy({ where: { id } });
 
   // * publish event
-  publisher({
-    queueName: "deleteCard",
+  publish({
+    topic: "deleteCard",
     id,
   });
 
@@ -233,21 +233,18 @@ exports.changeCardStatus = asyncHandler(async (req, res, next) => {
   }
 
   // * check valid cardId
-  const card = await Card.findOne({ where: { id: parseInt(id) } });
+  const card = await Card.findOne({ where: { id: parseInt(id) }, raw: true });
   if (!card) {
     return next(new ErrorResponse("invalid cardId", 400));
   }
 
   // * check valid creator
-  if (card.userId !== id) {
+  if (card.userId !== currentUserId) {
     return next(new ErrorResponse("forbidden", 403));
   }
 
   // * update card status
-  const result = await Card.uppdate(
-    { status },
-    { wherer: { id: parseInt(id) } }
-  );
+  await Card.update({ status }, { where: { id: parseInt(id) } });
 
   // * publish event
   publish({
@@ -276,8 +273,8 @@ exports.changeCardStatus = asyncHandler(async (req, res, next) => {
     });
   }
 
-  res.status(201).json({
+  res.status(200).json({
     success: true,
-    data: result,
+    message: "succesfully update",
   });
 });

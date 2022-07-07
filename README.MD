@@ -51,7 +51,7 @@
   - get detail card
 
 - event
-  - publish: newProject, newCard, deleteProject, updateCard, changeCardStatus, newNotif
+  - publish: newProject, updateProject, deleteProject, newCard, updateCard, changeCardStatus, newNotif
   - consume: newUser, newComment, deleteComment
 
 **3. Comment (mariadb-express) [table:comment,users,card,project]**
@@ -65,7 +65,7 @@
 
 - event:
   - publish: newComment, deleteComment, newNotif
-  - consume: newUser, newProject, newCard, updateCard, deleteProject, updateCardStatus
+  - consume: newUser, newProject, updateProject, deleteProject, newCard, updateCard, updateCardStatus
 
 **4. Notif (MongoDB-express) [collections: notif ]**
 
@@ -85,7 +85,7 @@
 
 ## improvement that can be done 🚧
 
-- better try, fault & storage mechanism
+- better try fail over & storage mechanism
 - write unit & integration test
 - if you have a lot of free time, you can add docker & kubernetes on top of it
 

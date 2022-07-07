@@ -35,6 +35,31 @@ const newProjectProcess = async (message) => {
   }
 };
 
+const updateProjectProcess = async (message) => {
+  log.info("incoming data 📩:", message);
+  // * business logic
+  const project = await Project.findOne({
+    where: { id: parseInt(message.id) },
+  });
+  if (project) {
+    await Project.update(
+      { title: message.title, description: message.description },
+      { where: { id: parseInt(message.id) } }
+    );
+  }
+};
+
+const deleteProjectProcess = async (message) => {
+  log.info("incoming data📩:", message);
+  // * business logic
+  const project = await Project.findOne({
+    where: { id: parseInt(message.id) },
+  });
+  if (project) {
+    await Project.destroy({ where: { id: parseInt(message.id) } });
+  }
+};
+
 const newCardProcess = async (message) => {
   log.info("incoming data 📩:", message);
   // * business logic
@@ -48,11 +73,11 @@ const newCardProcess = async (message) => {
 const updateCardProcess = async (message) => {
   log.info("incoming data 📩:", message);
   // * business logic
-  const card = await Card.findOne({ where: { id: message.id } });
+  const card = await Card.findOne({ where: { id: parseInt(message.id) } });
   if (card) {
     await Card.update(
       { name: message.name, content: message.content },
-      { where: { id: message.id } }
+      { where: { id: parseInt(message.id) } }
     );
   }
 };
@@ -70,6 +95,12 @@ const changeCardStatusProcess = async (message) => {
   }
 };
 
+const deleteCardProcess = async (message) => {
+  log.info("incoming data 📩:", message);
+  // * business logic
+  await Card.destroy({ where: { id: parseInt(message.id) } });
+};
+
 // * Stream Consumer
 async function eventConsumer() {
   await consumer.connect();
@@ -77,9 +108,12 @@ async function eventConsumer() {
     topics: [
       "newUser",
       "newProject",
+      "updateProject",
+      "deleteProject",
       "newCard",
       "updateCard",
       "changeCardStatus",
+      "deleteCard",
     ],
     fromBeginning: true,
   });
@@ -93,6 +127,12 @@ async function eventConsumer() {
       if (topic == "newProject") {
         newProjectProcess(parseObj);
       }
+      if (topic == "updateProject") {
+        updateProjectProcess(parseObj);
+      }
+      if (topic == "deleteProject") {
+        deleteProjectProcess(parseObj);
+      }
       if (topic == "newCard") {
         newCardProcess(parseObj);
       }
@@ -101,6 +141,9 @@ async function eventConsumer() {
       }
       if (topic == "changeCardStatus") {
         changeCardStatusProcess(parseObj);
+      }
+      if (topic == "deleteCard") {
+        deleteCardProcess(parseObj);
       }
     },
   });
