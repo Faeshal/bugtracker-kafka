@@ -4,7 +4,7 @@
 
 ![node](https://img.shields.io/badge/node-16.13.0-brightgreen) ![express](https://img.shields.io/badge/Express-4.17.1-lightgrey)
 
-![service map](https://i.postimg.cc/y8rqggFw/23-1.png)
+![service map](https://i.postimg.cc/sf52qvwB/bugtracker-drawio-drawio-1.png)
 
 ## Intro 🌴
 
